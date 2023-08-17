@@ -1,4 +1,4 @@
-package com.example.wiki;
+package com.jiyuan.wiki;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
