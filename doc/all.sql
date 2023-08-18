@@ -14,3 +14,5 @@ create table demo
     name varchar(50) null comment 'name',
     primary key (id)
 )engine=innodb default charset=utf8mb4 comment='demo';
+
+show variables like "%time_zone%";

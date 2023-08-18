@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <context id="Mysql" targetRuntime="MyBatis3" defaultModelType="flat">
+
+        <!-- Automatically check keywords and add backticks to keywords -->
+        <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <!--Overwrite generated XML file-->
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
+        <!-- The generated entity class adds the toString() method -->
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+
+        <!-- do not generate comments -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://rm-uf6w4pj33fefk7gb96o.mysql.rds.aliyuncs.com:3306/wikidev?serverTimezone=Asia/Shanghai"
+                        userId="wikidev"
+                        password="Alan1998@">
+        </jdbcConnection>
+
+        <!-- The location of the domain class -->
+        <javaModelGenerator targetProject="src\main\java"
+                            targetPackage="com.jiyuan.wiki.domain"/>
+
+        <!-- location of mapper xml -->
+        <sqlMapGenerator targetProject="src\main\resources"
+                         targetPackage="mapper"/>
+
+        <!-- The location of the mapper class -->
+        <javaClientGenerator targetProject="src\main\java"
+                             targetPackage="com.jiyuan.wiki.mapper"
+                             type="XMLMAPPER"/>
+
+        <!--<table tableName="demo" domainObjectName="Demo"/>-->
+        <!--<table tableName="ebook"/>-->
+        <!--<table tableName="category"/>-->
+        <!--<table tableName="doc"/>-->
+        <!--<table tableName="content"/>-->
+        <!--<table tableName="user"/>-->
+        <table tableName="demo"/>
+    </context>
+</generatorConfiguration>
