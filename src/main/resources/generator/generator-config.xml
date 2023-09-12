@@ -40,9 +40,9 @@
                              targetPackage="com.jiyuan.wiki.mapper"
                              type="XMLMAPPER"/>
 
-        <table tableName="demo"/>
+<!--        <table tableName="demo"/>-->
         <!--<table tableName="demo" domainObjectName="Demo"/>-->
-        <!--<table tableName="ebook"/>-->
+        <table tableName="ebook"/>
         <!--<table tableName="category"/>-->
         <!--<table tableName="doc"/>-->
         <!--<table tableName="content"/>-->
