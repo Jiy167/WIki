@@ -28,9 +28,10 @@
           <template v-if="column.key === 'action'">
         <span>
           <a-space size="small">
-            <a-button type="primary">
+            <a-button type="primary" @click="edit">
               edit
             </a-button>
+
             <a-button type="danger">
               delete
             </a-button>
@@ -41,7 +42,14 @@
       </a-table>
     </a-layout-content>
   </a-layout>
-
+  <a-modal
+      v-model:visible="modalVisible"
+      title="edit"
+      :confirm-loading="modalLoading"
+      @ok="handleModalOk"
+  >
+    <p>{{ modalText }}</p>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -157,6 +165,23 @@ export default defineComponent({
       });
     };
 
+    const modalText = ref<string>('Content of the modal');
+    const modalVisible = ref<boolean>(false);
+    const modalLoading = ref<boolean>(false);
+
+    const edit = () => {
+      modalVisible.value = true;
+    };
+
+    const handleModalOk = () => {
+      modalText.value = 'The modal will be closed after two seconds';
+      modalLoading.value = true;
+      setTimeout(() => {
+        modalVisible.value = false;
+        modalLoading.value = false;
+      }, 1000);
+    };
+
 
     onMounted(() => {
       handleQuery({
@@ -171,6 +196,14 @@ export default defineComponent({
       pagination,
       loading,
       handleTableChange,
+
+      edit,
+      modalText,
+      modalVisible,
+      modalLoading,
+      handleModalOk,
+
+
     };
   },
 });
