@@ -1,24 +1,21 @@
 package com.jiyuan.wiki.service;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jiyuan.wiki.domain.Ebook;
 import com.jiyuan.wiki.domain.EbookExample;
 import com.jiyuan.wiki.mapper.EbookMapper;
-import com.jiyuan.wiki.req.EbookReq;
-import com.jiyuan.wiki.req.PageReq;
-import com.jiyuan.wiki.resp.EbookResp;
+import com.jiyuan.wiki.req.EbookQueryReq;
+import com.jiyuan.wiki.req.EbookSaveReq;
+import com.jiyuan.wiki.resp.EbookQueryResp;
 import com.jiyuan.wiki.resp.PageResp;
 import com.jiyuan.wiki.util.CopyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,7 +23,7 @@ public class EbookService {
     private static final Logger LOG = LoggerFactory.getLogger(EbookService.class);
     @Resource
     private EbookMapper ebookMapper;
-    public PageResp<EbookResp> list(EbookReq req){
+    public PageResp<EbookQueryResp> list(EbookQueryReq req){
 
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
@@ -50,12 +47,23 @@ public class EbookService {
 //            respList.add(ebookResp);
 //        }
 
-        PageResp<EbookResp> pageResp = new PageResp<>();
+        PageResp<EbookQueryResp> pageResp = new PageResp<>();
         //listcopy
-        List<EbookResp> list = CopyUtil.copyList(ebookList, EbookResp.class);
+        List<EbookQueryResp> list = CopyUtil.copyList(ebookList, EbookQueryResp.class);
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(list);
         return pageResp;
 
+    }
+
+    public void save(EbookSaveReq req) {
+        Ebook ebook = CopyUtil.copy(req, Ebook.class);
+        if (ObjectUtils.isEmpty(req.getId())) {
+            // add
+            ebookMapper.insert(ebook);
+        } else {
+            // update
+            ebookMapper.updateByPrimaryKey(ebook);
+        }
     }
 }
