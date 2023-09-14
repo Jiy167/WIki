@@ -8,6 +8,21 @@ import axios from 'axios';
 
 axios.defaults.baseURL = process.env.VUE_APP_SERVER;
 
+axios.interceptors.request.use(function (config) {
+    console.log('request params：', config);
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
+axios.interceptors.response.use(function (response) {
+    console.log('response results：', response);
+    return response;
+}, error => {
+    console.log('response error：', error);
+    return Promise.reject(error);
+});
+
+
 createApp(App).use(router).use(Antd).mount('#app')
 
 
