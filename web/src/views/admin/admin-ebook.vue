@@ -34,9 +34,17 @@
             <a-button type="primary" @click="edit(record)">
               edit
             </a-button>
-            <a-button type="danger">
-              delete
-            </a-button>
+            <a-popconfirm
+                title="Are you sure delete this task?"
+                ok-text="Yes"
+                cancel-text="No"
+                @confirm="handleDelete(record.id)"
+            >
+              <a-button type="danger">
+                delete
+              </a-button>
+            </a-popconfirm>
+
           </a-space>
         </span>
           </template>
@@ -64,7 +72,7 @@
         <a-input v-model:value="ebook.category2Id" />
       </a-form-item>
       <a-form-item label="description">
-        <a-input v-model:value="ebook.desc" type="textarea"/>
+        <a-input v-model:value="ebook.description" type="textarea"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -189,6 +197,27 @@ export default defineComponent({
     const modalVisible = ref<boolean>(false);
     const modalLoading = ref<boolean>(false);
 
+
+
+    const handleModalOk = () => {
+      // modalText.value = 'The modal will be closed after two seconds';
+      modalLoading.value = true;
+
+      axios.post("/ebook/save", ebook.value).then((response) => {
+        const data = response.data; //data = commonResp
+        if(data.success){
+          modalVisible.value = false;
+          modalLoading.value = false;
+
+          //load list again
+          handleQuery({
+            page: pagination.value.current,
+            size: pagination.value.pageSize,
+          });
+        }
+      });
+    };
+
     //edit
     const edit = (record: any) => {
       modalVisible.value = true;
@@ -201,16 +230,11 @@ export default defineComponent({
       ebook.value = {};
     };
 
-    const handleModalOk = () => {
-      // modalText.value = 'The modal will be closed after two seconds';
-      modalLoading.value = true;
-
-      axios.post("/ebook/save", ebook.value).then((response) => {
+    //delete
+    const handleDelete = (id: number) => {
+      axios.delete("/ebook/delete/" + id).then((response) => {
         const data = response.data; //data = commonResp
         if(data.success){
-          modalVisible.value = false;
-          modalLoading.value = false;
-
           //load list again
           handleQuery({
             page: pagination.value.current,
@@ -236,6 +260,7 @@ export default defineComponent({
 
       edit,
       add,
+      handleDelete,
 
 
       // modalText,

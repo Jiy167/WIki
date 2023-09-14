@@ -15,12 +15,12 @@ import javax.annotation.Resource;
 public class EbookController {
 
     @Resource
-    private EbookService ebookServive;
+    private EbookService ebookService;
 
     @GetMapping("/list")
     public CommonResp list(EbookQueryReq req){
         CommonResp<PageResp<EbookQueryResp>> resp = new CommonResp<>();
-        PageResp<EbookQueryResp> list = ebookServive.list(req);
+        PageResp<EbookQueryResp> list = ebookService.list(req);
         resp.setContent(list);
         return resp;
     }
@@ -28,7 +28,15 @@ public class EbookController {
     @PostMapping("/save")
     public CommonResp save(@RequestBody EbookSaveReq req){
         CommonResp resp = new CommonResp<>();
-        ebookServive.save(req);
+        ebookService.save(req);
+        return resp;
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public CommonResp delete(@PathVariable Long id) {
+        System.out.println("here--------------id: " + id);
+        CommonResp resp = new CommonResp<>();
+        ebookService.delete(id);
         return resp;
     }
 }
