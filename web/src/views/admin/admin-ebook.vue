@@ -8,6 +8,7 @@
                :data-source="ebooks"
                :pagination="pagination"
                :loading="loading"
+               @change="handleTableChange"
       >
         <template #headerCell="{ column }">
           <template v-if="column.key === 'name'">
@@ -60,7 +61,7 @@ export default defineComponent({
     const ebooks = ref();
     const pagination = ref({
       current: 1,
-      pageSize: 2,
+      pageSize: 4,
       total: 0
     });
     const loading = ref(false);
@@ -129,17 +130,39 @@ export default defineComponent({
      **/
     const handleQuery = (params: any) => {
       loading.value = true;
-      axios.get("/ebook/list", params).then((response) => {
+      axios.get("/ebook/list", {
+        params: {
+          page: params.page,
+          size: params.size,
+        }
+      }).then((response) => {
         loading.value = false;
         const data = response.data;
-        ebooks.value = data.content;
+        ebooks.value = data.content.list;
 
+        //reset pagination button
         pagination.value.current = params.page;
+        pagination.value.total = data.content.total;
       });
     };
 
+    /**
+     * Triggered when page number is clicked
+     */
+    const handleTableChange = (pagination: any) => {
+      console.log("pagination params：" + pagination);
+      handleQuery({
+        page: pagination.current,
+        size: pagination.pageSize
+      });
+    };
+
+
     onMounted(() => {
-      handleQuery({});
+      handleQuery({
+        page: 1,
+        size: pagination.value.pageSize,
+      });
     });
 
     return {
@@ -147,6 +170,7 @@ export default defineComponent({
       columns,
       pagination,
       loading,
+      handleTableChange,
     };
   },
 });
