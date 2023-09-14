@@ -27,17 +27,28 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
-        <!-- 集成mybatis-->
+        <!-- integrate mybatis-->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.1.3</version>
         </dependency>
-        <!-- 集成mysql连接 -->
+        <!-- integrate mysql connection -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.22</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.70</version>
         </dependency>
 
 
