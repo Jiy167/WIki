@@ -3,6 +3,9 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
+      <a-button type="primary" @click="add()" size="large">
+        add
+      </a-button>
 
       <a-table :columns="columns"
                :data-source="ebooks"
@@ -31,7 +34,6 @@
             <a-button type="primary" @click="edit(record)">
               edit
             </a-button>
-
             <a-button type="danger">
               delete
             </a-button>
@@ -44,7 +46,7 @@
   </a-layout>
   <a-modal
       v-model:visible="modalVisible"
-      title="edit"
+      title="ebook forms"
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
@@ -187,9 +189,16 @@ export default defineComponent({
     const modalVisible = ref<boolean>(false);
     const modalLoading = ref<boolean>(false);
 
+    //edit
     const edit = (record: any) => {
       modalVisible.value = true;
       ebook.value = record;
+    };
+
+    //add
+    const add = () => {
+      modalVisible.value = true;
+      ebook.value = {};
     };
 
     const handleModalOk = () => {
@@ -226,11 +235,13 @@ export default defineComponent({
       handleTableChange,
 
       edit,
+      add,
+
+
       // modalText,
       modalVisible,
       modalLoading,
       handleModalOk,
-
       ebook,
 
 
