@@ -28,7 +28,7 @@
           <template v-if="column.key === 'action'">
         <span>
           <a-space size="small">
-            <a-button type="primary" @click="edit">
+            <a-button type="primary" @click="edit(record)">
               edit
             </a-button>
 
@@ -48,7 +48,23 @@
       :confirm-loading="modalLoading"
       @ok="handleModalOk"
   >
-    <p>{{ modalText }}</p>
+    <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
+      <a-form-item label="cover">
+        <a-input v-model:value="ebook.cover" />
+      </a-form-item>
+      <a-form-item label="name">
+        <a-input v-model:value="ebook.name" />
+      </a-form-item>
+      <a-form-item label="category1">
+        <a-input v-model:value="ebook.category1Id" />
+      </a-form-item>
+      <a-form-item label="category12">
+        <a-input v-model:value="ebook.category2Id" />
+      </a-form-item>
+      <a-form-item label="description">
+        <a-input v-model:value="ebook.desc" type="textarea"/>
+      </a-form-item>
+    </a-form>
   </a-modal>
 </template>
 
@@ -165,16 +181,19 @@ export default defineComponent({
       });
     };
 
-    const modalText = ref<string>('Content of the modal');
+    // -------- forms ---------
+    const ebook = ref({});
+    // const modalText = ref<string>('Content of the modal');
     const modalVisible = ref<boolean>(false);
     const modalLoading = ref<boolean>(false);
 
-    const edit = () => {
+    const edit = (record: any) => {
       modalVisible.value = true;
+      ebook.value = record;
     };
 
     const handleModalOk = () => {
-      modalText.value = 'The modal will be closed after two seconds';
+      // modalText.value = 'The modal will be closed after two seconds';
       modalLoading.value = true;
       setTimeout(() => {
         modalVisible.value = false;
@@ -198,10 +217,12 @@ export default defineComponent({
       handleTableChange,
 
       edit,
-      modalText,
+      // modalText,
       modalVisible,
       modalLoading,
       handleModalOk,
+
+      ebook,
 
 
     };
