@@ -5,6 +5,7 @@ import com.jiyuan.wiki.domain.Ebook;
 import com.jiyuan.wiki.req.EbookReq;
 import com.jiyuan.wiki.resp.CommonResp;
 import com.jiyuan.wiki.resp.EbookResp;
+import com.jiyuan.wiki.resp.PageResp;
 import com.jiyuan.wiki.service.EbookService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +23,8 @@ public class EbookController {
 
     @GetMapping("list")
     public CommonResp list(EbookReq req){
-        CommonResp<List<EbookResp>> resp = new CommonResp<>();
-        List<EbookResp>  list = ebookServive.list(req);
+        CommonResp<PageResp<EbookResp>> resp = new CommonResp<>();
+        PageResp<EbookResp> list = ebookServive.list(req);
         resp.setContent(list);
         return resp;
     }

@@ -7,7 +7,9 @@ import com.jiyuan.wiki.domain.Ebook;
 import com.jiyuan.wiki.domain.EbookExample;
 import com.jiyuan.wiki.mapper.EbookMapper;
 import com.jiyuan.wiki.req.EbookReq;
+import com.jiyuan.wiki.req.PageReq;
 import com.jiyuan.wiki.resp.EbookResp;
+import com.jiyuan.wiki.resp.PageResp;
 import com.jiyuan.wiki.util.CopyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,7 @@ public class EbookService {
     private static final Logger LOG = LoggerFactory.getLogger(EbookService.class);
     @Resource
     private EbookMapper ebookMapper;
-    public List<EbookResp> list(EbookReq req){
+    public PageResp<EbookResp> list(EbookReq req){
 
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
@@ -32,7 +34,7 @@ public class EbookService {
             criteria.andNameLike("%" + req.getName() + "%");
         }
 
-        PageHelper.startPage(1,3);
+        PageHelper.startPage(req.getPage(),req.getSize());
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 
         PageInfo<Ebook> pageInfo = new PageInfo<>(ebookList);
@@ -48,9 +50,12 @@ public class EbookService {
 //            respList.add(ebookResp);
 //        }
 
+        PageResp<EbookResp> pageResp = new PageResp<>();
         //listcopy
         List<EbookResp> list = CopyUtil.copyList(ebookList, EbookResp.class);
-        return list;
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setList(list);
+        return pageResp;
 
     }
 }
