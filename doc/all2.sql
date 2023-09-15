@@ -31,6 +31,7 @@ create table `test` (
 insert into `test` (id, name, password) values (1, '测试', 'password');
 
 # 分类
+use wikidev;
 drop table if exists `category`;
 create table `category` (
   `id` bigint not null comment 'id',
@@ -40,21 +41,21 @@ create table `category` (
   primary key (`id`)
 ) engine=innodb default charset=utf8mb4 comment='分类';
 
-insert into `category` (id, parent, name, sort) values (100, 000, '前端开发', 100);
+insert into `category` (id, parent, name, sort) values (100, 000, 'front-end development', 100);
 insert into `category` (id, parent, name, sort) values (101, 100, 'Vue', 101);
 insert into `category` (id, parent, name, sort) values (102, 100, 'HTML & CSS', 102);
 insert into `category` (id, parent, name, sort) values (200, 000, 'Java', 200);
-insert into `category` (id, parent, name, sort) values (201, 200, '基础应用', 201);
-insert into `category` (id, parent, name, sort) values (202, 200, '框架应用', 202);
+insert into `category` (id, parent, name, sort) values (201, 200, 'Basic application', 201);
+insert into `category` (id, parent, name, sort) values (202, 200, 'Framework application', 202);
 insert into `category` (id, parent, name, sort) values (300, 000, 'Python', 300);
-insert into `category` (id, parent, name, sort) values (301, 300, '基础应用', 301);
-insert into `category` (id, parent, name, sort) values (302, 300, '进阶方向应用', 302);
-insert into `category` (id, parent, name, sort) values (400, 000, '数据库', 400);
+insert into `category` (id, parent, name, sort) values (301, 300, 'Basic Application', 301);
+insert into `category` (id, parent, name, sort) values (302, 300, 'Advanced application', 302);
+insert into `category` (id, parent, name, sort) values (400, 000, 'database', 400);
 insert into `category` (id, parent, name, sort) values (401, 400, 'MySQL', 401);
-insert into `category` (id, parent, name, sort) values (500, 000, '其它', 500);
-insert into `category` (id, parent, name, sort) values (501, 500, '服务器', 501);
-insert into `category` (id, parent, name, sort) values (502, 500, '开发工具', 502);
-insert into `category` (id, parent, name, sort) values (503, 500, '热门服务端语言', 503);
+insert into `category` (id, parent, name, sort) values (500, 000, 'other', 500);
+insert into `category` (id, parent, name, sort) values (501, 500, 'server', 501);
+insert into `category` (id, parent, name, sort) values (502, 500, 'Development Tools', 502);
+insert into `category` (id, parent, name, sort) values (503, 500, 'Popular server-side languages', 503);
 
 -- 文档表
 drop table if exists `doc`;
