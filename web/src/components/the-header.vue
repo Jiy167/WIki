@@ -13,9 +13,13 @@
       <a-menu-item key="/admin/ebook">
         <router-link to="/admin/ebook">Ebook manager</router-link>
       </a-menu-item>
+      <a-menu-item key="/admin/category">
+        <router-link to="/admin/category">Category manager</router-link>
+      </a-menu-item>
       <a-menu-item key="/about">
         <router-link to="/about">About</router-link>
       </a-menu-item>
+
     </a-menu>
   </a-layout-header>
 </template>
