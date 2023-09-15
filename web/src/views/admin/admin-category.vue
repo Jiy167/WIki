@@ -20,7 +20,7 @@
       </a-form>
 
       <a-table :columns="columns"
-               :data-source="categorys"
+               :data-source="level1"
                :pagination="false"
                :loading="loading"
       >
@@ -73,8 +73,21 @@
       <a-form-item label="name">
         <a-input v-model:value="category.name" />
       </a-form-item>
-      <a-form-item label="father-category">
-        <a-input v-model:value="category.parent" />
+      <a-form-item label="parent-category">
+        <a-space>
+          <a-select
+              ref="select"
+              v-model:value="category.parent"
+              style="width: 300px"
+          >
+            <a-select-option value="0">
+              none
+            </a-select-option>
+            <a-select-option v-for="c in level1" :key="c.id" :value="c.id" :disabled="category.id === c.id">
+              {{c.name}}
+            </a-select-option>
+          </a-select>
+        </a-space>
       </a-form-item>
       <a-form-item label="order">
         <a-input v-model:value="category.sort" />
@@ -102,6 +115,19 @@ export default defineComponent({
     const categorys = ref();
     const loading = ref(false);
 
+    /**
+     * The first-level classification tree, the children attribute is the second-level classification
+     * [{
+     *   id: "",
+     *   name: "",
+     *   children: [{
+     *     id: "",
+     *     name: "",
+     *   }]
+     * }]
+     */
+    const level1 = ref(); // The first-level classification tree, the children attribute is the second-level classificati
+
     const columns = [
       {
         title: 'Name',
@@ -110,7 +136,7 @@ export default defineComponent({
         width: 350,
       },
       {
-        title: 'father-Category1',
+        title: 'parent-Category1',
         dataIndex: 'parent',
         key: 'parent',
       },
@@ -124,6 +150,8 @@ export default defineComponent({
         key: 'action',
       },
     ];
+
+
 
     // const category = [
     //   {
@@ -151,6 +179,11 @@ export default defineComponent({
         const data = response.data;
         if(data.success){
           categorys.value = data.content;
+          console.log("original array：", categorys.value);
+
+          level1.value = [];
+          level1.value = Tool.array2Tree(categorys.value, 0);
+          console.log("tree structure：", level1);
         }
         else{
           message.error(data.message);
@@ -215,7 +248,8 @@ export default defineComponent({
 
     return {
       param,
-      categorys,
+      // categorys,
+      level1,
       columns,
       loading,
       handleQuery,
