@@ -82,6 +82,7 @@
 import { SmileOutlined, DownOutlined, } from '@ant-design/icons-vue';
 import { defineComponent, ref, onMounted } from 'vue';
 import axios from 'axios';
+import { message } from 'ant-design-vue';
 
 
 
@@ -172,11 +173,17 @@ export default defineComponent({
       }).then((response) => {
         loading.value = false;
         const data = response.data;
-        ebooks.value = data.content.list;
+        if(data.success){
+          ebooks.value = data.content.list;
 
-        //reset pagination button
-        pagination.value.current = params.page;
-        pagination.value.total = data.content.total;
+          //reset pagination button
+          pagination.value.current = params.page;
+          pagination.value.total = data.content.total;
+        }
+        else{
+          message.error(data.message);
+        }
+
       });
     };
 
