@@ -45,25 +45,30 @@
             <img :src="record.cover" alt="Cover" style="max-width: 30px; max-height: 30px;" />
           </template>
 
-          <template v-if="column.key === 'action'">
-        <span>
-          <a-space size="small">
-            <a-button type="primary" @click="edit(record)">
-              edit
-            </a-button>
-            <a-popconfirm
-                title="Are you sure delete this task?"
-                ok-text="Yes"
-                cancel-text="No"
-                @confirm="handleDelete(record.id)"
-            >
-              <a-button type="danger">
-                delete
-              </a-button>
-            </a-popconfirm>
+          <template v-if="column.key === 'category'">
+<!--            {{column}}======{{record}}-->
+            <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
+          </template>
 
-          </a-space>
-        </span>
+          <template v-if="column.key === 'action'">
+            <span>
+              <a-space size="small">
+                <a-button type="primary" @click="edit(record)">
+                  edit
+                </a-button>
+                <a-popconfirm
+                    title="Are you sure delete this task?"
+                    ok-text="Yes"
+                    cancel-text="No"
+                    @confirm="handleDelete(record.id)"
+                >
+                  <a-button type="danger">
+                    delete
+                  </a-button>
+                </a-popconfirm>
+
+              </a-space>
+            </span>
           </template>
         </template>
       </a-table>
@@ -133,14 +138,9 @@ export default defineComponent({
         width: 350,
       },
       {
-        title: 'Category1',
-        dataIndex: 'category1Id',
-        key: 'category1Id',
-      },
-      {
-        title: 'Category2',
-        dataIndex: 'category2Id',
-        key: 'category2Id',
+        title: 'Category',
+        dataIndex: 'category',
+        key: 'category',
       },
       {
         title: 'Docs',
@@ -184,6 +184,7 @@ export default defineComponent({
      **/
     const handleQuery = (params: any) => {
       loading.value = true;
+      ebook.value = [];
       axios.get("/ebook/list", {
         params: {
           page: params.page,
@@ -278,6 +279,7 @@ export default defineComponent({
     };
 
     const level1 =  ref();
+    let categorys: any;
     /**
      * query all categories
      **/
@@ -287,7 +289,7 @@ export default defineComponent({
         loading.value = false;
         const data = response.data;
         if (data.success) {
-          const categorys = data.content;
+          categorys = data.content;
           console.log("original array：", categorys);
 
           level1.value = [];
@@ -297,8 +299,20 @@ export default defineComponent({
           message.error(data.message);
         }
       });
-
     };
+
+    const getCategoryName = (cid: number) => {
+      // console.log(cid)
+      let result = "";
+      categorys.forEach((item: any) => {
+        if (item.id === cid) {
+          // return item.name;
+          result = item.name;
+        }
+      });
+      return result;
+    };
+
 
 
     onMounted(() => {
@@ -317,6 +331,7 @@ export default defineComponent({
       loading,
       handleTableChange,
       handleQuery,
+      getCategoryName,
 
       edit,
       add,
