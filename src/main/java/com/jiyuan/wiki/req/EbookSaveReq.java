@@ -1,9 +1,12 @@
 package com.jiyuan.wiki.req;
 
 
+import javax.validation.constraints.NotNull;
+
 public class EbookSaveReq {
     private Long id;
 
+    @NotNull(message = "[name] cannot be empty")
     private String name;
 
     private Long category1Id;
