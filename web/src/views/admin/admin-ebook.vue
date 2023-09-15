@@ -82,12 +82,14 @@
       <a-form-item label="name">
         <a-input v-model:value="ebook.name" />
       </a-form-item>
-      <a-form-item label="category1">
-        <a-input v-model:value="ebook.category1Id" />
+      <a-form-item label="category">
+        <a-cascader
+            v-model:value="categoryIds"
+            :field-names="{ label: 'name', value: 'id', children: 'children' }"
+            :options="level1"
+        />
       </a-form-item>
-      <a-form-item label="category12">
-        <a-input v-model:value="ebook.category2Id" />
-      </a-form-item>
+
       <a-form-item label="description">
         <a-input v-model:value="ebook.description" type="textarea"/>
       </a-form-item>
@@ -217,7 +219,8 @@ export default defineComponent({
     };
 
     // -------- forms ---------
-    const ebook = ref({});
+    const categoryIds = ref();
+    const ebook = ref();
     // const modalText = ref<string>('Content of the modal');
     const modalVisible = ref<boolean>(false);
     const modalLoading = ref<boolean>(false);
@@ -227,6 +230,8 @@ export default defineComponent({
     const handleModalOk = () => {
       // modalText.value = 'The modal will be closed after two seconds';
       modalLoading.value = true;
+      ebook.value.category1Id = categoryIds.value[0];
+      ebook.value.category2Id = categoryIds.value[1];
 
       axios.post("/ebook/save", ebook.value).then((response) => {
         modalLoading.value = false;
@@ -249,6 +254,7 @@ export default defineComponent({
     const edit = (record: any) => {
       modalVisible.value = true;
       ebook.value = Tool.copy(record);
+      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
     };
 
     //add
@@ -271,7 +277,32 @@ export default defineComponent({
       });
     };
 
+    const level1 =  ref();
+    /**
+     * query all categories
+     **/
+    const handleQueryCategory = () => {
+      loading.value = true;
+      axios.get("/category/all").then((response) => {
+        loading.value = false;
+        const data = response.data;
+        if (data.success) {
+          const categorys = data.content;
+          console.log("original array：", categorys);
+
+          level1.value = [];
+          level1.value = Tool.array2Tree(categorys, 0);
+          console.log("tree structure：", level1.value);
+        } else {
+          message.error(data.message);
+        }
+      });
+
+    };
+
+
     onMounted(() => {
+      handleQueryCategory();
       handleQuery({
         page: 1,
         size: pagination.value.pageSize,
@@ -297,6 +328,8 @@ export default defineComponent({
       modalLoading,
       handleModalOk,
       ebook,
+      categoryIds,
+      level1,
 
 
     };
