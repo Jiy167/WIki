@@ -3,9 +3,26 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-button type="primary" @click="add()" size="large">
-        add
-      </a-button>
+      <a-form
+          layout="inline"
+          :model="param"
+      >
+        <a-form-item>
+          <a-input v-model:value="param.name" placeholder="name">
+            <template #prefix><UserOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+          </a-input>
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
+            Query
+          </a-button>
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" @click="add()">
+            Add
+          </a-button>
+        </a-form-item>
+      </a-form>
 
       <a-table :columns="columns"
                :data-source="ebooks"
@@ -93,6 +110,8 @@ export default defineComponent({
     DownOutlined,
   },
   setup() {
+    const param = ref();
+    param.value = {};
     const ebooks = ref();
     const pagination = ref({
       current: 1,
@@ -169,6 +188,7 @@ export default defineComponent({
         params: {
           page: params.page,
           size: params.size,
+          name: param.value.name,
         }
       }).then((response) => {
         loading.value = false;
@@ -261,11 +281,13 @@ export default defineComponent({
     });
 
     return {
+      param,
       ebooks,
       columns,
       pagination,
       loading,
       handleTableChange,
+      handleQuery,
 
       edit,
       add,
