@@ -8,12 +8,7 @@
           :model="param"
       >
         <a-form-item>
-          <a-input v-model:value="param.name" placeholder="name">
-            <template #prefix><UserOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
-          </a-input>
-        </a-form-item>
-        <a-form-item>
-          <a-button type="primary" @click="handleQuery({page: 1, size: pagination.pageSize})">
+          <a-button type="primary" @click="handleQuery()">
             Query
           </a-button>
         </a-form-item>
@@ -26,9 +21,8 @@
 
       <a-table :columns="columns"
                :data-source="categorys"
-               :pagination="pagination"
+               :pagination="false"
                :loading="loading"
-               @change="handleTableChange"
       >
         <template #headerCell="{ column }">
           <template v-if="column.key === 'name'">
@@ -106,11 +100,6 @@ export default defineComponent({
     const param = ref();
     param.value = {};
     const categorys = ref();
-    const pagination = ref({
-      current: 1,
-      pageSize: 10,
-      total: 0
-    });
     const loading = ref(false);
 
     const columns = [
@@ -155,23 +144,13 @@ export default defineComponent({
     /**
      * Data query
      **/
-    const handleQuery = (params: any) => {
+    const handleQuery = () => {
       loading.value = true;
-      axios.get("/category/list", {
-        params: {
-          page: params.page,
-          size: params.size,
-          name: param.value.name,
-        }
-      }).then((response) => {
+      axios.get("/category/all").then((response) => {
         loading.value = false;
         const data = response.data;
         if(data.success){
-          categorys.value = data.content.list;
-
-          //reset pagination button
-          pagination.value.current = params.page;
-          pagination.value.total = data.content.total;
+          categorys.value = data.content;
         }
         else{
           message.error(data.message);
@@ -180,16 +159,6 @@ export default defineComponent({
       });
     };
 
-    /**
-     * Triggered when page number is clicked
-     */
-    const handleTableChange = (pagination: any) => {
-      console.log("pagination params：" + pagination);
-      handleQuery({
-        page: pagination.current,
-        size: pagination.pageSize
-      });
-    };
 
     // -------- forms ---------
     const category = ref({});
@@ -210,10 +179,7 @@ export default defineComponent({
           modalVisible.value = false;
 
           //load list again
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize,
-          });
+          handleQuery();
         }else{
           message.error(data.message);
         }
@@ -238,28 +204,20 @@ export default defineComponent({
         const data = response.data; //data = commonResp
         if(data.success){
           //load list again
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize,
-          });
+          handleQuery();
         }
       });
     };
 
     onMounted(() => {
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize,
-      });
+      handleQuery();
     });
 
     return {
       param,
       categorys,
       columns,
-      pagination,
       loading,
-      handleTableChange,
       handleQuery,
 
       edit,
