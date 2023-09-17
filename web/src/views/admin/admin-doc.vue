@@ -214,7 +214,8 @@ export default defineComponent({
     // will change with the currently edited node, a separate responsive variable is declared.
     const treeSelectData = ref();
     treeSelectData.value = [];
-    const doc = ref({});
+    const doc = ref();
+    doc.value = {};
     // const modalText = ref<string>('Content of the modal');
     const modalVisible = ref<boolean>(false);
     const modalLoading = ref<boolean>(false);
@@ -224,6 +225,7 @@ export default defineComponent({
     const handleSave = () => {
       // modalText.value = 'The modal will be closed after two seconds';
       modalLoading.value = true;
+      doc.value.content = editor.txt.html();
 
       axios.post("/doc/save", doc.value).then((response) => {
         modalLoading.value = false;

@@ -21,6 +21,18 @@ public class DocSaveReq {
 
     private Integer voteCount;
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    @NotNull(message = "[content] cannot be empty")
+    private String content;
+
+
     public Long getId() {
         return id;
     }
@@ -79,18 +91,15 @@ public class DocSaveReq {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", ebookId=").append(ebookId);
-        sb.append(", parent=").append(parent);
-        sb.append(", name=").append(name);
-        sb.append(", sort=").append(sort);
-        sb.append(", viewCount=").append(viewCount);
-        sb.append(", voteCount=").append(voteCount);
-        sb.append("]");
-        return sb.toString();
+        return "DocSaveReq{" +
+                "id=" + id +
+                ", ebookId=" + ebookId +
+                ", parent=" + parent +
+                ", name='" + name + '\'' +
+                ", sort=" + sort +
+                ", viewCount=" + viewCount +
+                ", voteCount=" + voteCount +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

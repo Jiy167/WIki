@@ -2,8 +2,10 @@ package com.jiyuan.wiki.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.jiyuan.wiki.domain.Content;
 import com.jiyuan.wiki.domain.Doc;
 import com.jiyuan.wiki.domain.DocExample;
+import com.jiyuan.wiki.mapper.ContentMapper;
 import com.jiyuan.wiki.mapper.DocMapper;
 import com.jiyuan.wiki.req.DocQueryReq;
 import com.jiyuan.wiki.req.DocSaveReq;
@@ -29,6 +31,9 @@ public class DocService {
 
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    private ContentMapper contentMapper;
 
     public List<DocQueryResp> all() {
         DocExample docExample = new DocExample();
@@ -77,13 +82,21 @@ public class DocService {
      */
     public void save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req, Doc.class);
+        Content content = CopyUtil.copy(req, Content.class);
         if (ObjectUtils.isEmpty(req.getId())) {
             // add
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
+
+            content.setId(doc.getId());
+            contentMapper.insert(content);
         } else {
             // update
             docMapper.updateByPrimaryKey(doc);
+            int count = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (count == 0) {
+                contentMapper.insert(content);
+            }
         }
     }
 
