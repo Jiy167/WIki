@@ -85,7 +85,7 @@ create table `content` (
   primary key (`id`)
 ) engine=innodb default charset=utf8mb4 comment='文档内容';
 
--- 用户表
+-- user table
 drop table if exists `user`;
 create table `user` (
   `id` bigint not null comment 'ID',
@@ -96,7 +96,7 @@ create table `user` (
   unique key `login_name_unique` (`login_name`)
 ) engine=innodb default charset=utf8mb4 comment='用户';
 
-insert into `user` (id, `login_name`, `name`, `password`) values (1, 'test', '测试', 'e70e2222a9d67c4f2eae107533359aa4');
+insert into `user` (id, `login_name`, `name`, `password`) values (1, 'test', 'test', 'e70e2222a9d67c4f2eae107533359aa4');
 
 -- 电子书快照表
 drop table if exists `ebook_snapshot`;
