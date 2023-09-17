@@ -3,7 +3,7 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-row>
+      <a-row :gutter="24">
         <a-col :span="8" >
           <a-form
               layout="inline"
@@ -25,6 +25,7 @@
                    :data-source="level1"
                    :pagination="false"
                    :loading="loading"
+                   size="small"
           >
             <template #headerCell="{ column }">
               <template v-if="column.key === 'name'">
@@ -40,11 +41,14 @@
               <template v-if="column.key === 'cover'">
                 <img :src="record.cover" alt="Cover" style="max-width: 30px; max-height: 30px;" />
               </template>
+              <template v-if="column.key === 'name'">
+                {{record.sort}} {{record.name}}
+              </template>
 
               <template v-if="column.key === 'action'">
         <span>
           <a-space size="small">
-            <a-button type="primary" @click="edit(record)">
+            <a-button type="primary" @click="edit(record)" size="small">
               edit
             </a-button>
             <a-popconfirm
@@ -53,7 +57,7 @@
                 cancel-text="No"
                 @confirm="handleDelete(record.id)"
             >
-              <a-button type="danger">
+              <a-button type="danger" size="small">
                 delete
               </a-button>
             </a-popconfirm>
@@ -65,11 +69,22 @@
           </a-table>
         </a-col>
         <a-col :span="16" >
-          <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-item label="name">
-              <a-input v-model:value="doc.name" />
+          <p>
+            <a-form layout="inline" :model="param">
+              <a-form-item>
+                <a-button type="primary" @click="handleSave()">
+                  save
+                </a-button>
+              </a-form-item>
+            </a-form>
+          </p>
+          <a-form layout="vertical">
+
+            <a-form-item>
+              <a-input v-model:value="doc.name" placeholder="name"/>
             </a-form-item>
-            <a-form-item label="parent-doc">
+
+            <a-form-item>
               <a-tree-select
                   v-model:value="doc.parent"
                   style="width: 100%"
@@ -81,10 +96,10 @@
               >
               </a-tree-select>
             </a-form-item>
-            <a-form-item label="order">
-              <a-input v-model:value="doc.sort" />
+            <a-form-item>
+              <a-input v-model:value="doc.sort" placeholder="order"/>
             </a-form-item>
-            <a-form-item label="content">
+            <a-form-item>
               <div id="content"></div>
             </a-form-item>
 
@@ -159,38 +174,11 @@ export default defineComponent({
         // width: 150,
       },
       {
-        title: 'parent-doc',
-        dataIndex: 'parent',
-        key: 'parent',
-      },
-      {
-        title: 'order',
-        key: 'sort',
-        dataIndex: 'sort',
-      },
-      {
         title: 'Action',
         key: 'action',
       },
     ];
 
-
-
-    // const doc = [
-    //   {
-    //     key: '1',
-    //     cover: '/image/cover11.png',
-    //     name: 'new',
-    //     doc1Id: '1',
-    //     doc2Id: '2',
-    //     docCount: '3',
-    //     viewCount: 4,
-    //     voteCount: 100,
-    //     age: 32,
-    //
-    //   },
-    //
-    // ];
 
     /**
      * Data query
@@ -227,9 +215,9 @@ export default defineComponent({
     const modalVisible = ref<boolean>(false);
     const modalLoading = ref<boolean>(false);
     const editor = new E('#content');
+    editor.config.zIndex = 0;
 
-
-    const handleModalOk = () => {
+    const handleSave = () => {
       // modalText.value = 'The modal will be closed after two seconds';
       modalLoading.value = true;
 
@@ -325,9 +313,7 @@ export default defineComponent({
 
       // Add a "none" to the selection tree
       treeSelectData.value.unshift({id: 0, name: 'none'});
-      setTimeout(function () {
-        editor.create();
-      }, 100);
+
     };
 
     //add
@@ -341,9 +327,7 @@ export default defineComponent({
 
       // Add a "none" to the selection tree
       treeSelectData.value.unshift({id: 0, name: 'none'});
-      setTimeout(function () {
-        editor.create();
-      }, 100);
+
     };
 
     //delete
@@ -369,6 +353,8 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      editor.create();
+
       handleQuery();
     });
 
@@ -388,7 +374,7 @@ export default defineComponent({
       // modalText,
       modalVisible,
       modalLoading,
-      handleModalOk,
+      handleSave,
       doc,
 
       treeSelectData
