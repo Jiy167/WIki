@@ -74,20 +74,16 @@
         <a-input v-model:value="doc.name" />
       </a-form-item>
       <a-form-item label="parent-doc">
-        <a-space>
-          <a-select
-              ref="select"
-              v-model:value="doc.parent"
-              style="width: 300px"
-          >
-            <a-select-option value="0">
-              none
-            </a-select-option>
-            <a-select-option v-for="c in level1" :key="c.id" :value="c.id" :disabled="doc.id === c.id">
-              {{c.name}}
-            </a-select-option>
-          </a-select>
-        </a-space>
+        <a-tree-select
+            v-model:value="doc.parent"
+            style="width: 100%"
+            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+            :tree-data="treeSelectData"
+            placeholder="please select parent doc"
+            tree-default-expand-all
+            :replaceFields="{label: 'name', key: 'id', value: 'id'}"
+        >
+        </a-tree-select>
       </a-form-item>
       <a-form-item label="order">
         <a-input v-model:value="doc.sort" />
@@ -177,6 +173,7 @@ export default defineComponent({
       loading.value = true;
       axios.get("/doc/all").then((response) => {
         loading.value = false;
+        level1.value = [];
         const data = response.data;
         if(data.success){
           docs.value = data.content;
@@ -195,6 +192,10 @@ export default defineComponent({
 
 
     // -------- forms ---------
+    // Because the attribute status of the tree selection component
+    // will change with the currently edited node, a separate responsive variable is declared.
+    const treeSelectData = ref();
+    treeSelectData.value = [];
     const doc = ref({});
     // const modalText = ref<string>('Content of the modal');
     const modalVisible = ref<boolean>(false);
@@ -220,16 +221,60 @@ export default defineComponent({
       });
     };
 
+    /**
+     * Set a node and its descendant nodes to disabled
+     */
+    const setDisable = (treeSelectData: any, id: any) => {
+      // console.log(treeSelectData, id);
+      // 遍历数组，即遍历某一层节点
+      for (let i = 0; i < treeSelectData.length; i++) {
+        const node = treeSelectData[i];
+        if (node.id === id) {
+          // 如果当前节点就是目标节点
+          console.log("disabled", node);
+          // 将目标节点设置为disabled
+          node.disabled = true;
+
+          // 遍历所有子节点，将所有子节点全部都加上disabled
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            for (let j = 0; j < children.length; j++) {
+              setDisable(children, children[j].id)
+            }
+          }
+        } else {
+          // f the current node is not the target node, go to its child nodes and look again.
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            setDisable(children, id);
+          }
+        }
+      }
+    };
+
     //edit
     const edit = (record: any) => {
       modalVisible.value = true;
       doc.value = Tool.copy(record);
+
+
+      // You cannot select the current node and all its descendant nodes as parent nodes, which will break the tree.
+      treeSelectData.value = Tool.copy(level1.value);
+      setDisable(treeSelectData.value, record.id);
+
+      // Add a "none" to the selection tree
+      treeSelectData.value.unshift({id: 0, name: 'none'});
     };
 
     //add
     const add = () => {
       modalVisible.value = true;
       doc.value = {};
+
+      treeSelectData.value = Tool.copy(level1.value);
+
+      // Add a "none" to the selection tree
+      treeSelectData.value.unshift({id: 0, name: 'none'});
     };
 
     //delete
@@ -266,7 +311,7 @@ export default defineComponent({
       handleModalOk,
       doc,
 
-
+      treeSelectData
     };
   },
 });
