@@ -7,9 +7,11 @@ import com.jiyuan.wiki.domain.UserExample;
 import com.jiyuan.wiki.exception.BusinessException;
 import com.jiyuan.wiki.exception.BusinessExceptionCode;
 import com.jiyuan.wiki.mapper.UserMapper;
+import com.jiyuan.wiki.req.UserLoginReq;
 import com.jiyuan.wiki.req.UserQueryReq;
 import com.jiyuan.wiki.req.UserResetPasswordReq;
 import com.jiyuan.wiki.req.UserSaveReq;
+import com.jiyuan.wiki.resp.UserLoginResp;
 import com.jiyuan.wiki.resp.UserQueryResp;
 import com.jiyuan.wiki.resp.PageResp;
 import com.jiyuan.wiki.util.CopyUtil;
@@ -112,5 +114,27 @@ public class UserService {
     public void resetPassword(UserResetPasswordReq req) {
         User user = CopyUtil.copy(req, User.class);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    /**
+     * login
+     */
+    public UserLoginResp login(UserLoginReq req) {
+        User userDb = selectByLoginName(req.getLoginName());
+        if (ObjectUtils.isEmpty(userDb)) {
+            // 用户名不存在
+            LOG.info("用户名不存在, {}", req.getLoginName());
+            throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+        } else {
+            if (userDb.getPassword().equals(req.getPassword())) {
+                // 登录成功
+                UserLoginResp userLoginResp = CopyUtil.copy(userDb, UserLoginResp.class);
+                return userLoginResp;
+            } else {
+                // 密码不对
+                LOG.info("密码不对, 输入密码：{}, 数据库密码：{}", req.getPassword(), userDb.getPassword());
+                throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+            }
+        }
     }
 }

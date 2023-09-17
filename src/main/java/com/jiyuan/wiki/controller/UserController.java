@@ -1,9 +1,11 @@
 package com.jiyuan.wiki.controller;
 
+import com.jiyuan.wiki.req.UserLoginReq;
 import com.jiyuan.wiki.req.UserQueryReq;
 import com.jiyuan.wiki.req.UserResetPasswordReq;
 import com.jiyuan.wiki.req.UserSaveReq;
 import com.jiyuan.wiki.resp.CommonResp;
+import com.jiyuan.wiki.resp.UserLoginResp;
 import com.jiyuan.wiki.resp.UserQueryResp;
 import com.jiyuan.wiki.resp.PageResp;
 import com.jiyuan.wiki.service.UserService;
@@ -47,6 +49,15 @@ public class UserController {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp resp = new CommonResp<>();
         userService.resetPassword(req);
+        return resp;
+    }
+
+    @PostMapping("/login")
+    public CommonResp login(@Valid @RequestBody UserLoginReq req) {
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp<UserLoginResp> resp = new CommonResp<>();
+        UserLoginResp userLoginResp = userService.login(req);
+        resp.setContent(userLoginResp);
         return resp;
     }
 }
