@@ -3,43 +3,45 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-form
-          layout="inline"
-          :model="param"
-      >
-        <a-form-item>
-          <a-button type="primary" @click="handleQuery()">
-            Query
-          </a-button>
-        </a-form-item>
-        <a-form-item>
-          <a-button type="primary" @click="add()">
-            Add
-          </a-button>
-        </a-form-item>
-      </a-form>
+      <a-row>
+        <a-col :span="8" >
+          <a-form
+              layout="inline"
+              :model="param"
+          >
+            <a-form-item>
+              <a-button type="primary" @click="handleQuery()">
+                Query
+              </a-button>
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" @click="add()">
+                Add
+              </a-button>
+            </a-form-item>
+          </a-form>
 
-      <a-table :columns="columns"
-               :data-source="level1"
-               :pagination="false"
-               :loading="loading"
-      >
-        <template #headerCell="{ column }">
-          <template v-if="column.key === 'name'">
+          <a-table :columns="columns"
+                   :data-source="level1"
+                   :pagination="false"
+                   :loading="loading"
+          >
+            <template #headerCell="{ column }">
+              <template v-if="column.key === 'name'">
         <span>
           <smile-outlined />
           Name
         </span>
-          </template>
-        </template>
+              </template>
+            </template>
 
-        <template #bodyCell="{ column, record }">
+            <template #bodyCell="{ column, record }">
 
-          <template v-if="column.key === 'cover'">
-            <img :src="record.cover" alt="Cover" style="max-width: 30px; max-height: 30px;" />
-          </template>
+              <template v-if="column.key === 'cover'">
+                <img :src="record.cover" alt="Cover" style="max-width: 30px; max-height: 30px;" />
+              </template>
 
-          <template v-if="column.key === 'action'">
+              <template v-if="column.key === 'action'">
         <span>
           <a-space size="small">
             <a-button type="primary" @click="edit(record)">
@@ -58,42 +60,51 @@
 
           </a-space>
         </span>
-          </template>
-        </template>
-      </a-table>
+              </template>
+            </template>
+          </a-table>
+        </a-col>
+        <a-col :span="16" >
+          <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-form-item label="name">
+              <a-input v-model:value="doc.name" />
+            </a-form-item>
+            <a-form-item label="parent-doc">
+              <a-tree-select
+                  v-model:value="doc.parent"
+                  style="width: 100%"
+                  :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                  :tree-data="treeSelectData"
+                  placeholder="please select parent doc"
+                  tree-default-expand-all
+                  :replaceFields="{label: 'name', key: 'id', value: 'id'}"
+              >
+              </a-tree-select>
+            </a-form-item>
+            <a-form-item label="order">
+              <a-input v-model:value="doc.sort" />
+            </a-form-item>
+            <a-form-item label="content">
+              <div id="content"></div>
+            </a-form-item>
+
+          </a-form>
+        </a-col>
+
+      </a-row>
+
+
+
     </a-layout-content>
   </a-layout>
-  <a-modal
-      v-model:visible="modalVisible"
-      title="doc forms"
-      :confirm-loading="modalLoading"
-      @ok="handleModalOk"
-  >
-    <a-form :model="formState" :label-col="labelCol" :wrapper-col="wrapperCol">
-      <a-form-item label="name">
-        <a-input v-model:value="doc.name" />
-      </a-form-item>
-      <a-form-item label="parent-doc">
-        <a-tree-select
-            v-model:value="doc.parent"
-            style="width: 100%"
-            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-            :tree-data="treeSelectData"
-            placeholder="please select parent doc"
-            tree-default-expand-all
-            :replaceFields="{label: 'name', key: 'id', value: 'id'}"
-        >
-        </a-tree-select>
-      </a-form-item>
-      <a-form-item label="order">
-        <a-input v-model:value="doc.sort" />
-      </a-form-item>
-      <a-form-item label="content">
-        <div id="content"></div>
-      </a-form-item>
-
-    </a-form>
-  </a-modal>
+<!--  <a-modal-->
+<!--      v-model:visible="modalVisible"-->
+<!--      title="doc forms"-->
+<!--      :confirm-loading="modalLoading"-->
+<!--      @ok="handleModalOk"-->
+<!--  >-->
+<!--    -->
+<!--  </a-modal>-->
 </template>
 
 <script lang="ts">
@@ -145,7 +156,7 @@ export default defineComponent({
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        width: 350,
+        // width: 150,
       },
       {
         title: 'parent-doc',
