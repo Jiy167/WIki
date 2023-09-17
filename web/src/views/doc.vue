@@ -9,6 +9,7 @@
               @select="onSelect"
               :replaceFields="{title: 'name', key: 'id', value: 'id'}"
               :defaultExpandAll="true"
+              :defaultSelectedKeys="defaultSelectedKeys"
           >
           </a-tree>
         </a-col>
@@ -33,6 +34,9 @@ export default defineComponent({
     const route = useRoute();
     const docs = ref();
     const html = ref();
+    const defaultSelectedKeys = ref();
+    defaultSelectedKeys.value = [];
+
 
     /**
      * The first-level classification tree, the children attribute is the second-level classification
@@ -49,7 +53,21 @@ export default defineComponent({
     level1.value = [];
 
     /**
-     * 数据查询
+     * content query
+     **/
+    const handleQueryContent = (id: number) => {
+      axios.get("/doc/find-content/" + id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          html.value = data.content;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
+     * dataquery
      **/
     const handleQuery = () => {
       axios.get("/doc/all/" + route.query.ebookId).then((response) => {
@@ -59,19 +77,11 @@ export default defineComponent({
 
           level1.value = [];
           level1.value = Tool.array2Tree(docs.value, 0);
-        } else {
-          message.error(data.message);
-        }
-      });
-    };
-    /**
-     * content query
-     **/
-    const handleQueryContent = (id: number) => {
-      axios.get("/doc/find-content/" + id).then((response) => {
-        const data = response.data;
-        if (data.success) {
-          html.value = data.content;
+
+          if (Tool.isNotEmpty(level1)) {
+            defaultSelectedKeys.value = [level1.value[0].id];
+            handleQueryContent(level1.value[0].id);
+          }
         } else {
           message.error(data.message);
         }
