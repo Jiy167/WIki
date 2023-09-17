@@ -95,11 +95,13 @@
 
 <script lang="ts">
 import { SmileOutlined, DownOutlined, } from '@ant-design/icons-vue';
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, createVNode } from 'vue';
 import axios from 'axios';
-import { message } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
+import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
+
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -261,7 +263,8 @@ export default defineComponent({
       }
     };
 
-    const ids: Array<string> = [];
+    const deleteIds: Array<string> = [];
+    const deleteNames: Array<string> = [];
     /**
      * Find the entire branch
      */
@@ -275,7 +278,8 @@ export default defineComponent({
           console.log("delete", node);
           // 将目标ID放入结果集ids
           // node.disabled = true;
-          ids.push(id);
+          deleteIds.push(id);
+          deleteNames.push(node.name);
 
           // Traverse all child nodes
           const children = node.children;
@@ -323,13 +327,23 @@ export default defineComponent({
 
     //delete
     const handleDelete = (id: number) => {
+      deleteIds.length = 0;
+      deleteNames.length = 0;
       getDeleteIds(level1.value, id);
-      axios.delete("/doc/delete/" + ids.join(",")).then((response) => {
-        const data = response.data; //data = commonResp
-        if(data.success){
-          //load list again
-          handleQuery();
-        }
+      Modal.confirm({
+        title: 'Important reminder',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: 'Will be deleted: [' + deleteNames.join("，") + "] They cannot be recovered after deletion. Confirm deletion?",
+        onOk() {
+          // console.log(ids)
+          axios.delete("/doc/delete/" + deleteIds.join(",")).then((response) => {
+            const data = response.data; // data = commonResp
+            if (data.success) {
+              // load list again
+              handleQuery();
+            }
+          });
+        },
       });
     };
 
