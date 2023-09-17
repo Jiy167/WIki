@@ -261,6 +261,39 @@ export default defineComponent({
       }
     };
 
+    const ids: Array<string> = [];
+    /**
+     * Find the entire branch
+     */
+    const getDeleteIds = (treeSelectData: any, id: any) => {
+      // console.log(treeSelectData, id);
+      // Traverse the array, that is, traverse the nodes of a certain layer
+      for (let i = 0; i < treeSelectData.length; i++) {
+        const node = treeSelectData[i];
+        if (node.id === id) {
+          // If the current node is the target node
+          console.log("delete", node);
+          // 将目标ID放入结果集ids
+          // node.disabled = true;
+          ids.push(id);
+
+          // Traverse all child nodes
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            for (let j = 0; j < children.length; j++) {
+              getDeleteIds(children, children[j].id)
+            }
+          }
+        } else {
+          // If the current node is not the target node, go to its child nodes and look again.
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            getDeleteIds(children, id);
+          }
+        }
+      }
+    };
+
     //edit
     const edit = (record: any) => {
       modalVisible.value = true;
@@ -290,7 +323,8 @@ export default defineComponent({
 
     //delete
     const handleDelete = (id: number) => {
-      axios.delete("/doc/delete/" + id).then((response) => {
+      getDeleteIds(level1.value, id);
+      axios.delete("/doc/delete/" + ids.join(",")).then((response) => {
         const data = response.data; //data = commonResp
         if(data.success){
           //load list again

@@ -35,7 +35,7 @@ public class DocService {
         docExample.setOrderByClause("sort asc");
         List<Doc> docList = docMapper.selectByExample(docExample);
 
-        // 列表复制
+        // list copy
         List<DocQueryResp> list = CopyUtil.copyList(docList, DocQueryResp.class);
 
         return list;
@@ -56,13 +56,13 @@ public class DocService {
         // for (Doc doc : docList) {
         //     // DocResp docResp = new DocResp();
         //     // BeanUtils.copyProperties(doc, docResp);
-        //     // 对象复制
+        //     // object copy
         //     DocResp docResp = CopyUtil.copy(doc, DocResp.class);
         //
         //     respList.add(docResp);
         // }
 
-        // 列表复制
+        // list copy
         List<DocQueryResp> list = CopyUtil.copyList(docList, DocQueryResp.class);
 
         PageResp<DocQueryResp> pageResp = new PageResp();
@@ -78,16 +78,23 @@ public class DocService {
     public void save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req, Doc.class);
         if (ObjectUtils.isEmpty(req.getId())) {
-            // 新增
+            // add
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
         } else {
-            // 更新
+            // update
             docMapper.updateByPrimaryKey(doc);
         }
     }
 
     public void delete(Long id) {
         docMapper.deleteByPrimaryKey(id);
+    }
+
+    public void delete(List<String> ids) {
+        DocExample docExample = new DocExample();
+        DocExample.Criteria criteria = docExample.createCriteria();
+        criteria.andIdIn(ids);
+        docMapper.deleteByExample(docExample);
     }
 }
