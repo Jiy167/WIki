@@ -76,7 +76,7 @@
       <a-form-item label="nickName">
         <a-input v-model:value="user.name" />
       </a-form-item>
-      <a-form-item label="password">
+      <a-form-item label="password" v-show="!user.id">
         <a-input v-model:value="user.password" />
       </a-form-item>
     </a-form>

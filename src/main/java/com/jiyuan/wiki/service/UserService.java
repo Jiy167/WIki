@@ -84,6 +84,7 @@ public class UserService {
         } else {
             // update
             user.setLoginName(null);
+            user.setPassword(null);
             userMapper.updateByPrimaryKeySelective(user);
         }
     }
