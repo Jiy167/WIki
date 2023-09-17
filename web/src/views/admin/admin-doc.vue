@@ -155,6 +155,10 @@ export default defineComponent({
     param.value = {};
     const docs = ref();
     const loading = ref(false);
+    // Because the attribute status of the tree selection component
+    // will change with the currently edited node, a separate responsive variable is declared.
+    const treeSelectData = ref();
+    treeSelectData.value = [];
 
     /**
      * The first-level classification tree, the children attribute is the second-level classification
@@ -200,6 +204,11 @@ export default defineComponent({
           level1.value = [];
           level1.value = Tool.array2Tree(docs.value, 0);
           console.log("tree structure：", level1);
+
+          // The parent document drop-down box is initialized, which is equivalent to clicking Add
+          treeSelectData.value = Tool.copy(level1.value);
+          // Add a "None" to the selection tree
+          treeSelectData.value.unshift({id: 0, name: '无'});
         }
         else{
           message.error(data.message);
@@ -210,10 +219,7 @@ export default defineComponent({
 
 
     // -------- forms ---------
-    // Because the attribute status of the tree selection component
-    // will change with the currently edited node, a separate responsive variable is declared.
-    const treeSelectData = ref();
-    treeSelectData.value = [];
+
     const doc = ref();
     doc.value = {};
     // const modalText = ref<string>('Content of the modal');
