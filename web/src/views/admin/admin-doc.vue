@@ -307,11 +307,26 @@ export default defineComponent({
       }
     };
 
+
+    /**
+     * content query
+     **/
+    const handleQueryContent = () => {
+      axios.get("/doc/find-content/" + doc.value.id).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          editor.txt.html(data.content)
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
     //edit
     const edit = (record: any) => {
       modalVisible.value = true;
       doc.value = Tool.copy(record);
-
+      handleQueryContent();
 
       // You cannot select the current node and all its descendant nodes as parent nodes, which will break the tree.
       treeSelectData.value = Tool.copy(level1.value);

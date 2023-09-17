@@ -54,8 +54,8 @@ public class DocService {
         List<Doc> docList = docMapper.selectByExample(docExample);
 
         PageInfo<Doc> pageInfo = new PageInfo<>(docList);
-        LOG.info("总行数：{}", pageInfo.getTotal());
-        LOG.info("总页数：{}", pageInfo.getPages());
+        LOG.info("total row：{}", pageInfo.getTotal());
+        LOG.info("total page：{}", pageInfo.getPages());
 
         // List<DocResp> respList = new ArrayList<>();
         // for (Doc doc : docList) {
@@ -78,7 +78,7 @@ public class DocService {
     }
 
     /**
-     * 保存
+     * save
      */
     public void save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req, Doc.class);
@@ -109,5 +109,10 @@ public class DocService {
         DocExample.Criteria criteria = docExample.createCriteria();
         criteria.andIdIn(ids);
         docMapper.deleteByExample(docExample);
+    }
+
+    public String findContent(Long id) {
+        Content content = contentMapper.selectByPrimaryKey(id);
+        return content.getContent();
     }
 }
