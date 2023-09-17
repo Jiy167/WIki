@@ -53,6 +53,11 @@
           <template v-if="column.key === 'action'">
             <span>
               <a-space size="small">
+                <router-link to="/admin/doc">
+                  <a-button type="primary">
+                    file manager
+                  </a-button>
+                </router-link>
                 <a-button type="primary" @click="edit(record)">
                   edit
                 </a-button>
@@ -110,6 +115,7 @@ import { message } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 
 export default defineComponent({
+  name: 'AdminEbook',
   components: {
     SmileOutlined,
     DownOutlined,
