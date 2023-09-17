@@ -8,6 +8,7 @@ import com.jiyuan.wiki.exception.BusinessException;
 import com.jiyuan.wiki.exception.BusinessExceptionCode;
 import com.jiyuan.wiki.mapper.UserMapper;
 import com.jiyuan.wiki.req.UserQueryReq;
+import com.jiyuan.wiki.req.UserResetPasswordReq;
 import com.jiyuan.wiki.req.UserSaveReq;
 import com.jiyuan.wiki.resp.UserQueryResp;
 import com.jiyuan.wiki.resp.PageResp;
@@ -103,5 +104,13 @@ public class UserService {
         } else {
             return userList.get(0);
         }
+    }
+
+    /**
+     * reset password
+     */
+    public void resetPassword(UserResetPasswordReq req) {
+        User user = CopyUtil.copy(req, User.class);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }
