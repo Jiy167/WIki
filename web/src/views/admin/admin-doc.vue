@@ -88,6 +88,9 @@
       <a-form-item label="order">
         <a-input v-model:value="doc.sort" />
       </a-form-item>
+      <a-form-item label="content">
+        <div id="content"></div>
+      </a-form-item>
 
     </a-form>
   </a-modal>
@@ -101,6 +104,7 @@ import { message, Modal } from 'ant-design-vue';
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
 import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
+import E from 'wangeditor'
 
 
 export default defineComponent({
@@ -211,7 +215,7 @@ export default defineComponent({
     // const modalText = ref<string>('Content of the modal');
     const modalVisible = ref<boolean>(false);
     const modalLoading = ref<boolean>(false);
-
+    const editor = new E('#content');
 
 
     const handleModalOk = () => {
@@ -237,16 +241,16 @@ export default defineComponent({
      */
     const setDisable = (treeSelectData: any, id: any) => {
       // console.log(treeSelectData, id);
-      // 遍历数组，即遍历某一层节点
+      // iterator over the array, that is, traverse the nodes of a certain layer
       for (let i = 0; i < treeSelectData.length; i++) {
         const node = treeSelectData[i];
         if (node.id === id) {
-          // 如果当前节点就是目标节点
+          // If the current node is the target node
           console.log("disabled", node);
-          // 将目标节点设置为disabled
+          // Set the target node to disabled
           node.disabled = true;
 
-          // 遍历所有子节点，将所有子节点全部都加上disabled
+          // Traverse all child nodes and add disabled to all child nodes
           const children = node.children;
           if (Tool.isNotEmpty(children)) {
             for (let j = 0; j < children.length; j++) {
@@ -276,7 +280,7 @@ export default defineComponent({
         if (node.id === id) {
           // If the current node is the target node
           console.log("delete", node);
-          // 将目标ID放入结果集ids
+          // Put target id into result set ids
           // node.disabled = true;
           deleteIds.push(id);
           deleteNames.push(node.name);
@@ -310,6 +314,9 @@ export default defineComponent({
 
       // Add a "none" to the selection tree
       treeSelectData.value.unshift({id: 0, name: 'none'});
+      setTimeout(function () {
+        editor.create();
+      }, 100);
     };
 
     //add
@@ -323,6 +330,9 @@ export default defineComponent({
 
       // Add a "none" to the selection tree
       treeSelectData.value.unshift({id: 0, name: 'none'});
+      setTimeout(function () {
+        editor.create();
+      }, 100);
     };
 
     //delete
