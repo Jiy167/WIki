@@ -21,11 +21,14 @@
             </a-form-item>
           </a-form>
 
-          <a-table :columns="columns"
-                   :data-source="level1"
-                   :pagination="false"
-                   :loading="loading"
-                   size="small"
+          <a-table
+              v-if="level1.length > 0"
+              :columns="columns"
+              :data-source="level1"
+              :pagination="false"
+              :loading="loading"
+              size="small"
+              :defaultExpandAllRows="true"
           >
             <template #headerCell="{ column }">
               <template v-if="column.key === 'name'">
@@ -164,7 +167,8 @@ export default defineComponent({
      *   }]
      * }]
      */
-    const level1 = ref(); // The first-level classification tree, the children attribute is the second-level classificati
+    const level1 = ref(); // The first-level classification tree, the children attribute is the second-level classification
+    level1.value = [];
 
     const columns = [
       {
