@@ -1,14 +1,14 @@
 package com.jiyuan.wiki.req;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 public class UserLoginReq {
 
-    @NotNull(message = "[LoginName] cannot be empty")
+    @NotEmpty(message = "[LoginName] cannot be empty")
     private String loginName;
 
-    @NotNull(message = "[password] cannot be empty")
+    @NotEmpty(message = "[password] cannot be empty")
     // @Length(min = 6, max = 20, message = "[password]6~32")
     @Pattern(regexp = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}$", message = "[Password] Rule is incorrect")
     private String password;

@@ -50,6 +50,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import axios from 'axios';
+import { message } from 'ant-design-vue';
+
+declare let hexMd5: any;
+declare let KEY: any;
 
 export default defineComponent({
   name: 'the-header',
@@ -66,7 +71,19 @@ export default defineComponent({
 
     // login
     const login = () => {
-      console.log("start login")
+      console.log("start login");
+      loginModalLoading.value = true;
+      loginUser.value.password = hexMd5(loginUser.value.password + KEY);
+      axios.post('/user/login', loginUser.value).then((response) => {
+        loginModalLoading.value = false;
+        const data = response.data;
+        if (data.success) {
+          loginModalVisible.value = false;
+          message.success("login successful");
+        } else {
+          message.error(data.message);
+        }
+      });
     };
 
     return {
