@@ -48,7 +48,7 @@ public class DocService {
     public RedisUtil redisUtil;
 
     @Resource
-    public WebSocketServer webSocketServer;
+    public WsService wsService;
 
     public List<DocQueryResp> all(Long ebookId) {
         DocExample docExample = new DocExample();
@@ -154,7 +154,7 @@ public class DocService {
 
         // forward news
         Doc docDb = docMapper.selectByPrimaryKey(id);
-        webSocketServer.sendInfo("[" + docDb.getName() + "] is Liked!");
+        wsService.sendInfo("[" + docDb.getName() + "] is Liked!");
     }
 
     public void updateEbookInfo() {
