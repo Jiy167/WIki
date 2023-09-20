@@ -7,6 +7,7 @@ import com.jiyuan.wiki.domain.Doc;
 import com.jiyuan.wiki.domain.DocExample;
 import com.jiyuan.wiki.mapper.ContentMapper;
 import com.jiyuan.wiki.mapper.DocMapper;
+import com.jiyuan.wiki.mapper.DocMapperCust;
 import com.jiyuan.wiki.req.DocQueryReq;
 import com.jiyuan.wiki.req.DocSaveReq;
 import com.jiyuan.wiki.resp.DocQueryResp;
@@ -34,6 +35,10 @@ public class DocService {
 
     @Resource
     private ContentMapper contentMapper;
+
+    @Resource
+    private DocMapperCust docMapperCust;
+
 
     public List<DocQueryResp> all(Long ebookId) {
         DocExample docExample = new DocExample();
@@ -87,6 +92,8 @@ public class DocService {
         if (ObjectUtils.isEmpty(req.getId())) {
             // add
             doc.setId(snowFlake.nextId());
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
             docMapper.insert(doc);
 
             content.setId(doc.getId());
@@ -114,6 +121,7 @@ public class DocService {
 
     public String findContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+        docMapperCust.increaseViewCount(id);
         if (ObjectUtils.isEmpty(content)) {
             return "";
         } else {
