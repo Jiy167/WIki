@@ -11,14 +11,14 @@ export class Tool {
   }
 
   /**
-   * 非空校验
+   * non-null verification
    */
   public static isNotEmpty (obj: any) {
     return !this.isEmpty(obj);
   }
 
   /**
-   * 对象复制
+   * obj copy
    * @param obj
    */
   public static copy (obj: object) {
@@ -51,6 +51,24 @@ export class Tool {
       }
     }
     return result;
+  }
+
+  /**
+   * Randomly generate [len] length [radix] base number
+   * @param len
+   * @param radix default 62
+   * @returns {string}
+   */
+  public static uuid (len: number, radix = 62) {
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+    const uuid = [];
+    radix = radix || chars.length;
+
+    for (let i = 0; i < len; i++) {
+      uuid[i] = chars[0 | Math.random() * radix];
+    }
+
+    return uuid.join('');
   }
 
 }
