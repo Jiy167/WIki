@@ -23,7 +23,8 @@
             </div>
             <a-divider style="height: 2px; background-color: #9999cc"/>
           </div>
-          <div class="wangeditor" :innerHTML="html"></div>
+          <div class="wangeditor" v-if="html !== ''" :innerHTML="html"></div>
+          <div class="wangeditor" v-else>No content available</div>
           <div class="vote-div">
             <a-button type="primary" shape="round" :size="'large'" @click="vote">
               <template #icon><LikeOutlined /> &nbsp;likes: {{doc.voteCount}} </template>
@@ -98,6 +99,7 @@ export default defineComponent({
             defaultSelectedKeys.value = [level1.value[0].id];
             handleQueryContent(level1.value[0].id);
             doc.value = level1.value[0];
+
           }
         } else {
           message.error(data.message);
@@ -108,9 +110,16 @@ export default defineComponent({
     const onSelect = (selectedKeys: any, info: any) => {
       console.log('selected', selectedKeys, info);
       if (Tool.isNotEmpty(selectedKeys)) {
-        doc.value = info.selectedNodes[0].props;
-        // load content
-        handleQueryContent(selectedKeys[0]);
+        const selectedNode = info.selectedNodes[0];
+        if (selectedNode) {
+          // Directly assign the properties of the proxy object to doc.value
+          doc.value = selectedNode;
+          console.log(doc.value);
+          // load content
+          handleQueryContent(selectedKeys[0]);
+        } else {
+          console.log("info.selectedNodes[0] is undefined");
+        }
       }
     };
 
