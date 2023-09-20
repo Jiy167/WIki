@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 
 import com.jiyuan.wiki.util.RequestContext;
+import com.jiyuan.wiki.util.SnowFlake;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -34,14 +35,14 @@ public class LogAspect {
     @Pointcut("execution(public * com.jiyuan.*.controller..*Controller.*(..))")
     public void controllerPointcut() {}
 
-//    @Resource
-//    private SnowFlake snowFlake;
+    @Resource
+    private SnowFlake snowFlake;
 
     @Before("controllerPointcut()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
 
-//        //
-//        MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
+        //
+        MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
 
         // start to print
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
