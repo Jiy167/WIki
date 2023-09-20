@@ -1,6 +1,6 @@
 <template>
   <a-layout-footer style="text-align: center">
-    Jiyuan ebooks, hello:{{user.name}}
+    Jiyuan ebooks<span v-show="user.id">, hello: {{user.name}}</span>
   </a-layout-footer>
 </template>
 
