@@ -26,7 +26,16 @@
       </a-menu-item>
 
     </a-menu>
-
+    <a-popconfirm
+        title="Confirm to log out??"
+        ok-text="Yes"
+        cancel-text="No"
+        @confirm="logout()"
+    >
+      <a class="login-menu" v-show="user.id">
+        <span>log out</span>
+      </a>
+    </a-popconfirm>
     <a class="login-menu" v-show="user.id">
       <span>Hello:{{user.name}}</span>
     </a>
@@ -95,13 +104,28 @@ export default defineComponent({
       });
     };
 
+    const logout = () => {
+      console.log("start to log out");
+      axios.get('/user/logout/' + user.value.token).then((response) => {
+        const data = response.data;
+        if (data.success) {
+          message.success("log out successful!");
+          store.commit("setUser", {});
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
     return {
       loginModalVisible,
       loginModalLoading,
       showLoginModal,
       loginUser,
       login,
-      user
+      user,
+      logout,
+
     }
   }
 });
