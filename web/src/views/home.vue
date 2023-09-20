@@ -36,10 +36,19 @@
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
-          <span v-for="{ type, text } in actions" :key="type">
-            <component :is="type" style="margin-right: 8px" />
-            {{ text }}
-          </span>
+              <span>
+                <component v-bind:is="'FileOutlined'" style="margin-right: 8px" />
+                {{ item.docCount }}
+              </span>
+              <span>
+                <component v-bind:is="'UserOutlined'" style="margin-right: 8px" />
+                {{ item.viewCount }}
+              </span>
+              <span>
+                <component v-bind:is="'LikeOutlined'" style="margin-right: 8px" />
+                {{ item.voteCount }}
+              </span>
+
             </template>
             <a-list-item-meta :description="item.description">
               <template #title>
@@ -57,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
+import { FileOutlined, LikeOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { defineComponent, onMounted, ref, reactive, toRef} from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
@@ -82,9 +91,9 @@ const listData: Record<string, string>[] = [];
 export default defineComponent({
   name: 'Home',
   components:{
-    StarOutlined,
+    FileOutlined,
     LikeOutlined,
-    MessageOutlined,
+    UserOutlined,
   },
   setup(){
 
