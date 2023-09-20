@@ -3,6 +3,7 @@ package com.jiyuan.wiki.aspect;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 
+import com.jiyuan.wiki.util.RequestContext;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -48,6 +49,7 @@ public class LogAspect {
         Signature signature = joinPoint.getSignature();
         String name = signature.getName();
 
+        RequestContext.setRemoteAddr(getRemoteIp(request));
         // print request information
         LOG.info("------------- start -------------");
         LOG.info("Request address: {} {}", request.getRequestURL().toString(), request.getMethod());
@@ -90,5 +92,22 @@ public class LogAspect {
         return result;
     }
 
-
+    /**
+     * Use nginx as a reverse proxy. You need to use this method to get the real remote IP.
+     * @param request
+     * @return
+     */
+    public String getRemoteIp(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
 }

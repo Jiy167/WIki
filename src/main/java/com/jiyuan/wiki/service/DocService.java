@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.jiyuan.wiki.domain.Content;
 import com.jiyuan.wiki.domain.Doc;
 import com.jiyuan.wiki.domain.DocExample;
+import com.jiyuan.wiki.exception.BusinessException;
+import com.jiyuan.wiki.exception.BusinessExceptionCode;
 import com.jiyuan.wiki.mapper.ContentMapper;
 import com.jiyuan.wiki.mapper.DocMapper;
 import com.jiyuan.wiki.mapper.DocMapperCust;
@@ -13,6 +15,8 @@ import com.jiyuan.wiki.req.DocSaveReq;
 import com.jiyuan.wiki.resp.DocQueryResp;
 import com.jiyuan.wiki.resp.PageResp;
 import com.jiyuan.wiki.util.CopyUtil;
+import com.jiyuan.wiki.util.RedisUtil;
+import com.jiyuan.wiki.util.RequestContext;
 import com.jiyuan.wiki.util.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +43,8 @@ public class DocService {
     @Resource
     private DocMapperCust docMapperCust;
 
+    @Resource
+    public RedisUtil redisUtil;
 
     public List<DocQueryResp> all(Long ebookId) {
         DocExample docExample = new DocExample();
@@ -133,6 +139,13 @@ public class DocService {
      * likes
      */
     public void vote(Long id) {
-        docMapperCust.increaseVoteCount(id);
+        // docMapperCust.increaseVoteCount(id);
+        // Remote IP+doc.id is used as key and cannot be repeated within 24 hours.
+        String ip = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE_" + id + "_" + ip, 3600 * 24)) {
+            docMapperCust.increaseVoteCount(id);
+        } else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
+        }
     }
 }
