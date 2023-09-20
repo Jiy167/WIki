@@ -26,8 +26,12 @@
       </a-menu-item>
 
     </a-menu>
-    <a class="login-menu" @click="showLoginModal">
-        <span>Login</span>
+
+    <a class="login-menu" v-show="user.id">
+      <span>Hello:{{user.name}}</span>
+    </a>
+    <a class="login-menu" v-show="!user.id" @click="showLoginModal">
+      <span>Login</span>
     </a>
     <a-modal
           title="Login"
@@ -59,9 +63,12 @@ declare let KEY: any;
 export default defineComponent({
   name: 'the-header',
   setup () {
+    const user = ref();
+    user.value = {};
+
     const loginUser = ref({
       loginName: "test",
-      password: "test"
+      password: "test123"
     });
     const loginModalVisible = ref(false);
     const loginModalLoading = ref(false);
@@ -80,6 +87,7 @@ export default defineComponent({
         if (data.success) {
           loginModalVisible.value = false;
           message.success("login successful");
+          user.value = data.content;
         } else {
           message.error(data.message);
         }
@@ -91,7 +99,8 @@ export default defineComponent({
       loginModalLoading,
       showLoginModal,
       loginUser,
-      login
+      login,
+      user
     }
   }
 });
