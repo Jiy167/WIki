@@ -213,5 +213,9 @@ export default defineComponent({
   padding: 15px;
   text-align: center;
 }
-
+/* Image adaptive */
+.wangeditor img {
+  max-width: 100%;
+  height: auto;
+}
 </style>
