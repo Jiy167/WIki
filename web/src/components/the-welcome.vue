@@ -131,6 +131,82 @@ export default defineComponent({
       });
     };
 
+    const init30DayEcharts = (list: any) => {
+      // Based on the prepared dom, initialize the echarts instance
+      const myChart = echarts.init(document.getElementById('main'));
+
+      const xAxis = [];
+      const seriesView = [];
+      const seriesVote = [];
+      for (let i = 0; i < list.length; i++) {
+        const record = list[i];
+        xAxis.push(record.date);
+        seriesView.push(record.viewIncrease);
+        seriesVote.push(record.voteIncrease);
+      }
+
+      //Specify the configuration items and data of the chart
+      const option = {
+        title: {
+          text: '30-day trend chart'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['Total number of reads', 'Total number of likes']
+        },
+        grid: {
+          left: '1%',
+          right: '3%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: xAxis
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            name: 'Total reading volume',
+            type: 'line',
+            // stack: 'total amount', not stacked
+            data: seriesView,
+            smooth: true
+          },
+          {
+            name: 'Total likes',
+            type: 'line',
+            // stack: 'total amount', not stacked
+            data: seriesVote,
+            smooth: true
+          }
+        ]
+      };
+
+      // Display the chart using the configuration items and data just specified.
+      myChart.setOption(option);
+    };
+
+    const get30DayStatistic = () => {
+      axios.get('/ebook-snapshot/get-30-statistic').then((response) => {
+        const data = response.data;
+        if (data.success) {
+          const statisticList = data.content;
+
+          init30DayEcharts(statisticList)
+        }
+      });
+    };
 
     const testEcharts = () => {
       // Based on the prepared dom, initialize the echarts instance
@@ -162,7 +238,8 @@ export default defineComponent({
 
     onMounted(() => {
       getStatistic();
-      testEcharts();
+      // testEcharts();
+      get30DayStatistic();
     });
 
     return {
