@@ -12,6 +12,7 @@
   "dependencies": {
     "ant-design-vue": "^3.2.20",
     "axios": "^0.21.0",
+    "i18next": "^23.5.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.1.0",

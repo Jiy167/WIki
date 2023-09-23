@@ -141,7 +141,7 @@ import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
 import ExclamationCircleOutlined from "@ant-design/icons-vue/ExclamationCircleOutlined";
 import E from 'wangeditor'
-
+import i18next from 'i18next';
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -213,9 +213,9 @@ export default defineComponent({
           console.log("tree structure：", level1);
 
           // The parent document drop-down box is initialized, which is equivalent to clicking Add
-          treeSelectData.value = Tool.copy(level1.value);
+          treeSelectData.value = Tool.copy(level1.value) || [];
           // Add a "None" to the selection tree
-          treeSelectData.value.unshift({id: 0, name: '无'});
+          treeSelectData.value.unshift({id: 0, name: 'none'});
         }
         else{
           message.error(data.message);
@@ -235,6 +235,9 @@ export default defineComponent({
     const modalVisible = ref<boolean>(false);
     const modalLoading = ref<boolean>(false);
     const editor = new E('#content');
+    editor.config.lang = 'en';
+    //Introduce i18next plug-in
+    editor.i18next = i18next;
     editor.config.zIndex = 0;
 
     const handleSave = () => {
@@ -363,7 +366,7 @@ export default defineComponent({
         ebookId: route.query.ebookId
       };
 
-      treeSelectData.value = Tool.copy(level1.value);
+      treeSelectData.value = Tool.copy(level1.value) || [];
 
       // Add a "none" to the selection tree
       treeSelectData.value.unshift({id: 0, name: 'none'});
