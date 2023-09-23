@@ -87,12 +87,20 @@
         </a-card>
       </a-col>
     </a-row>
+    <br>
+    <a-row>
+      <a-col :span="24">
+        <div id="main" style="width: 100%;height:300px;"></div>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios';
+
+declare let echarts: any;
 
 export default defineComponent({
   name: 'the-welcome',
@@ -123,8 +131,38 @@ export default defineComponent({
       });
     };
 
+
+    const testEcharts = () => {
+      // Based on the prepared dom, initialize the echarts instance
+      const myChart = echarts.init(document.getElementById('main'));
+
+      //Specify the configuration items and data of the chart
+      const option = {
+        title: {
+          text: 'ECharts Getting Started Example'
+        },
+        tooltip: {},
+        legend: {
+          data:['sales']
+        },
+        xAxis: {
+          data: ["shirt","cardigan","chiffon shirt","pants","high heels","socks"]
+        },
+        yAxis: {},
+        series: [{
+          name: 'Sales',
+          type: 'bar',
+          data: [5, 20, 36, 10, 10, 20]
+        }]
+      };
+
+      // Display the chart using the configuration items and data just specified.
+      myChart.setOption(option);
+    };
+
     onMounted(() => {
       getStatistic();
+      testEcharts();
     });
 
     return {
