@@ -6,7 +6,7 @@
         v-model:selectedKeys="selectedKeys1"
         theme="dark"
         mode="horizontal"
-        :style="{ lineHeight: '64px' }"
+        :style="{ lineHeight: '64px', width: '800px' }"
         class="menu"
     >
       <a-menu-item key="/home">
