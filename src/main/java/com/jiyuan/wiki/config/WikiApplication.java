@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @ComponentScan({"com.jiyuan"})
 @MapperScan("com.jiyuan.wiki.mapper")
+@EnableScheduling
 @EnableAsync
 public class WikiApplication {
 

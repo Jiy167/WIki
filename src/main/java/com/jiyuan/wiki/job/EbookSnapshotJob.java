@@ -25,7 +25,7 @@ public class EbookSnapshotJob {
      * Customize cron expression to run batch
      * Only after the last execution is completed, the next time will be executed at the next time point. If you miss it, you will miss it.
      */
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 1 * * * ?")
     public void doSnapshot() {
         // Add log serial number
         MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));

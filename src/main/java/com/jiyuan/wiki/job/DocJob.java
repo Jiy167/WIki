@@ -24,7 +24,7 @@ public class DocJob {
     /**
      * Update e-book information every 30 seconds
      */
-    @Scheduled(cron = "5/30 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void cron() {
         // Add log serial number
         MDC.put("LOG_ID", String.valueOf(snowFlake.nextId()));
