@@ -89,7 +89,7 @@
     </a-row>
     <br>
     <a-row>
-      <a-col :span="24">
+      <a-col :span="24" id="main-col">
         <div id="main" style="width: 100%;height:300px;"></div>
       </a-col>
     </a-row>
@@ -132,6 +132,12 @@ export default defineComponent({
     };
 
     const init30DayEcharts = (list: any) => {
+      // A problem occurred after releasing production: switching to other pages and then switching back to the home page, the report cannot be displayed.
+      //Solution: Clear the original area with id=main and re-initialize it
+      const mainDom = document.getElementById('main-col');
+      if (mainDom) {
+        mainDom.innerHTML = '<div id="main" style="width: 100%;height:300px;"></div>';
+      }
       // Based on the prepared dom, initialize the echarts instance
       const myChart = echarts.init(document.getElementById('main'));
 
