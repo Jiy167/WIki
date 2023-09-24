@@ -7,6 +7,7 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import axios from 'axios';
 import {Tool} from "@/util/tool";
+import { message } from 'ant-design-vue';
 
 axios.defaults.baseURL = process.env.VUE_APP_SERVER;
 
@@ -26,6 +27,15 @@ axios.interceptors.response.use(function (response) {
     return response;
 }, error => {
     console.log('response error：', error);
+    const response = error.response;
+    const status = response.status;
+    if (status === 401) {
+        // Determine the status code is 401 and jump to the home page or login page
+        console.log("Not logged in, jump to homepage");
+        store.commit("setUser", {});
+        message.error("Not logged in or logged in timeout");
+        router.push('/');
+    }
     return Promise.reject(error);
 });
 
