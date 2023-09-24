@@ -218,4 +218,9 @@ export default defineComponent({
   max-width: 100%;
   height: auto;
 }
+
+.wangeditor iframe {
+  width: 100%;
+  height: 400px;
+}
 </style>
