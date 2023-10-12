@@ -18,7 +18,7 @@ npm install
 
 
 ## Page access
-* Website address: http://localhost:8080<br>
+* Website address:wwwjyluckysss.com
   Initial username and password: test/test123
 
 ## TODO
